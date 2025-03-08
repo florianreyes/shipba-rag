@@ -82,13 +82,6 @@ export default function Home() {
               </TabsContent>
             </Tabs>
           </CardContent>
-          <CardFooter className={`border-t ${darkMode ? "border-gray-800" : "border-gray-200"} pt-6`}>
-            <Button
-              className={`w-full ${darkMode ? "bg-white text-black hover:bg-gray-200" : "bg-gray-900 text-white hover:bg-gray-800"} transition-all duration-200`}
-            >
-              {formType === "short" ? "Enviar Formulario Rápido" : "Enviar Perfil Completo"}
-            </Button>
-          </CardFooter>
         </Card>
       </div>
     </main>
