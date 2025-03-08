@@ -350,7 +350,7 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
                 Enviando...
               </>
             ) : (
-              "Enviar Formulario Rápido"
+              "Enviar"
             )}
           </button>
         </div>

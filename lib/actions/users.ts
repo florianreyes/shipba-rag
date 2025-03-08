@@ -8,12 +8,17 @@ import {
 import { generateEmbeddings } from "../ai/embedding";
 import { db } from "../db";
 import { embeddings as embeddingsTable } from "../db/schema/embeddings";
+import { generateInterestDescription } from "../ai/curator";
 
 export const createUser = async (input: NewUserParams) => {
   console.log("Entre. Creando User...");
   try {
-    const { name, mail, content } = insertUserSchema.parse(input);
+    var { name, mail, content } = insertUserSchema.parse(input);
+    console.log("Contenido original: " + content);
 
+    content = await generateInterestDescription(content);
+    console.log("Contenido curado: " + content);
+    
     const [user] = await db
       .insert(users)
       .values({ name, mail, content })

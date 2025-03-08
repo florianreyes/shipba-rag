@@ -369,7 +369,7 @@ export function LongForm({ darkMode }: { darkMode: boolean }) {
                 Enviando...
               </>
             ) : (
-              "Enviar Formulario Extendido"
+              "Enviar"
             )}
           </button>
         </div>
