@@ -1,8 +1,11 @@
 import { embed, embedMany } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { cosineDistance, desc, gt, sql } from "drizzle-orm";
+import { cosineDistance, desc, gt, sql, inArray } from "drizzle-orm";
 import { embeddings } from "../db/schema/embeddings";
+import { users } from "../db/schema/users";
+
 import { db } from "../db";
+
 
 const embeddingModel = openai.embedding("text-embedding-ada-002");
 
@@ -33,14 +36,27 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
   return embedding;
 };
 
+export const getUsersFromId = async (ids: string[]): Promise<string[]> => {
+  const usersList = await db
+    .select({ name: users.name, content: users.content })
+    .from(users)
+    .where(inArray(users.id, ids));
+  return usersList.map((user) => user.name);
+};
+
 export const findRelevantContent = async (userQuery: string) => {
   const userQueryEmbedded = await generateEmbedding(userQuery);
   const similarity = sql<number>`1 - (${cosineDistance(embeddings.embedding, userQueryEmbedded)})`;
-  const similarGuides = await db
-    .select({ name: embeddings.content, similarity })
+  const similarContentFromUser = await db
+    .select({ id: embeddings.id, userId: embeddings.userId, name: embeddings.content, similarity })
     .from(embeddings)
     .where(gt(similarity, 0.3))
     .orderBy((t) => desc(t.similarity))
-    .limit(4);
-  return similarGuides;
+    .limit(8);
+
+  const userIds = similarContentFromUser.map((content) => content.userId).filter((id): id is string => id !== null);
+  const userNames = await getUsersFromId(userIds);
+
+  return { similarContentFromUser, userNames };
 };
+

@@ -10,6 +10,7 @@ import { db } from "../db";
 import { embeddings as embeddingsTable } from "../db/schema/embeddings";
 
 export const createUser = async (input: NewUserParams) => {
+  console.log("Entre. Creando User...");
   try {
     const { name, mail, content } = insertUserSchema.parse(input);
 

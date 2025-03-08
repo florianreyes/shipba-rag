@@ -68,9 +68,9 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
     try {
       setIsSubmitting(true);
       setStatus({ type: null, message: "" });
-      
+
       const { username, email, ...contentFields } = values;
-      
+
       // Concatenate all content fields
       const content = Object.entries(contentFields)
         .map(([key, value]) => {
@@ -118,15 +118,14 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
         {status.type && (
           <Alert
-            className={`${
-              status.type === "success"
+            className={`${status.type === "success"
                 ? darkMode
                   ? "bg-green-900/20 text-green-300"
                   : "bg-green-50 text-green-800"
                 : darkMode
-                ? "bg-red-900/20 text-red-300"
-                : "bg-red-50 text-red-800"
-            } mb-4`}
+                  ? "bg-red-900/20 text-red-300"
+                  : "bg-red-50 text-red-800"
+              } mb-4`}
           >
             <AlertDescription>{status.message}</AlertDescription>
           </Alert>
@@ -341,11 +340,9 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full ${
-              darkMode ? "bg-white text-black hover:bg-gray-200" : "bg-gray-900 text-white hover:bg-gray-800"
-            } transition-all duration-200 rounded-md px-4 py-2 flex items-center justify-center ${
-              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full ${darkMode ? "bg-white text-black hover:bg-gray-200" : "bg-gray-900 text-white hover:bg-gray-800"
+              } transition-all duration-200 rounded-md px-4 py-2 flex items-center justify-center ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+              }`}
           >
             {isSubmitting ? (
               <>
