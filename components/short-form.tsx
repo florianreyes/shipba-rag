@@ -7,10 +7,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "@/components/ui/form"
 import { InterestCheckboxes } from "./interest-checkboxes"
+import { createUser } from "@/lib/actions/users"
 
 const formSchema = z.object({
   username: z.string().min(2, {
     message: "El nombre de usuario debe tener al menos 2 caracteres.",
+  }),
+  email: z.string().email({
+    message: "Por favor ingresa un email válido.",
   }),
   podcastIntro: z.string().min(5, {
     message: "Por favor proporciona una breve introducción.",
@@ -40,6 +44,7 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      email: "",
       podcastIntro: "",
       freeDay: "",
       dreamProject: "",
@@ -50,8 +55,26 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { username, email, ...contentFields } = values;
+    
+    // Concatenate all content fields
+    const content = Object.entries(contentFields)
+      .map(([key, value]) => {
+        if (Array.isArray(value)) {
+          return `${key}: ${value.join(", ")}`;
+        }
+        return `${key}: ${value}`;
+      })
+      .join("\n");
+
+    const result = await createUser({
+      name: username,
+      mail: email,
+      content,
+    });
+
+    console.log(result);
   }
 
   return (
@@ -70,6 +93,29 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
               <FormControl>
                 <Input
                   placeholder="Ingresa tu nombre de usuario"
+                  {...field}
+                  className={
+                    darkMode
+                      ? "bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-gray-500"
+                      : "bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-gray-400"
+                  }
+                />
+              </FormControl>
+              <FormMessage className="text-red-500" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className={darkMode ? "text-white" : "text-gray-900"}>Email</FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder="Ingresa tu email"
                   {...field}
                   className={
                     darkMode
