@@ -5,28 +5,24 @@ import { z } from "zod";
 
 import { nanoid } from "@/lib/utils";
 
-export const resources = pgTable("resources", {
+export const workspaces = pgTable("workspaces", {
   id: varchar("id", { length: 191 })
     .primaryKey()
     .$defaultFn(() => nanoid()),
-  content: text("content").notNull(),
-
+  name: text("name").notNull(),
+  description: text("description").notNull(),
   createdAt: timestamp("created_at")
-    .notNull()
-    .default(sql`now()`),
-  updatedAt: timestamp("updated_at")
     .notNull()
     .default(sql`now()`),
 });
 
-// Schema for resources - used to validate API requests
-export const insertResourceSchema = createSelectSchema(resources)
+// Schema for workspaces - used to validate API requests
+export const insertWorkspaceSchema = createSelectSchema(workspaces)
   .extend({})
   .omit({
     id: true,
     createdAt: true,
-    updatedAt: true,
   });
 
-// Type for resources - used to type API request params and within Components
-export type NewResourceParams = z.infer<typeof insertResourceSchema>;
+// Type for workspaces - used to type API request params and within Components
+export type NewWorkspaceParams = z.infer<typeof insertWorkspaceSchema>;
