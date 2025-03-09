@@ -38,7 +38,7 @@ const formSchema = z.object({
   "Contanos algo de vos que todos deberían saber:": z.string().min(5, {
     message: "Por favor comparte algo sobre ti.",
   }),
-  "🚀 ¿Trabajaste alguna vez en un proyecto personal o paralelo?": z.string().optional(),
+  "🚀 ¿Trabajaste alguna vez en un proyecto personal?": z.string().optional(),
   "💼 ¿Estás buscando nuevas oportunidades profesionales actualmente? ¿Te interesa sumar talento a tu equipo?": z.string().optional(),
 }).refine(
   (data) => {
@@ -77,7 +77,7 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
       "¿Qué te gustaría aprender o explorar en los próximos meses?": "",
       "¿Qué influencers o cuentas relevantes en redes sociales te interesan?": "",
       "Contanos algo de vos que todos deberían saber:": "",
-      "🚀 ¿Trabajaste alguna vez en un proyecto personal o paralelo?": "",
+      "🚀 ¿Trabajaste alguna vez en un proyecto personal?": "",
       "💼 ¿Estás buscando nuevas oportunidades profesionales actualmente? ¿Te interesa sumar talento a tu equipo?": "",
     },
   }) as ExtendedUseFormReturn
@@ -405,11 +405,11 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="🚀 ¿Trabajaste alguna vez en un proyecto personal o paralelo?"
+            name="🚀 ¿Trabajaste alguna vez en un proyecto personal?"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
-                  🚀 ¿Trabajaste alguna vez en un proyecto personal o paralelo?
+                  🚀 ¿Trabajaste alguna vez en un proyecto personal?
                   <p className="text-xs text-gray-500 mt-1 font-normal">
                     Contanos brevemente de qué se trató y cómo resultó esa experiencia para vos (¡vale todo! éxitos, aprendizajes o anécdotas interesantes).
                   </p>
