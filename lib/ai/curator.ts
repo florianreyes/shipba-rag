@@ -10,9 +10,10 @@ export async function generateInterestDescription(interest: string): Promise<str
   try {
     const { text } = await generateText({
       model: openai('gpt-4o'),
-      system: `Eres un experto en analizar y mejorar la descripción de los intereses de las personas.
+      system: `Eres un experto en analizar y estructurar la descripción de los intereses de las personas.
 La entrada consiste en una serie de preguntas y respuestas que revelan sus pasiones.
-Tu tarea es extraer los temas clave de sus respuestas y generar una descripción coherente y detallada que resalte sus intereses, motivaciones y posibles aplicaciones de sus pasiones.
+Tu tarea es extraer los temas clave de sus respuestas y generar una descripción coherente y detallada que resalte sus intereses, motivaciones y posibles aplicaciones de sus pasiones NUNCA DEBES REMOVER O AGREGAR INFORMACION EXTRA.
+MANTENER LUGARES, NOMBRES Y CUALQUIER DETALLE RELEVANTE DE LA PERSONA.
 Bajo ninguna circunstancia debes inventar información que no esté presente en la entrada.
 Escribe el texto respetando la forma en que la persona lo redactó.
 No mencionar “esta persona bla bla” todo el tiempo, sino utilizar “Tiene”, “Es”, “Le gusta” o la estructura que mejor se adapte.

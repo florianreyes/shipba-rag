@@ -82,8 +82,9 @@ export const findRelevantContent = async (userQuery: string) => {
 
   console.log(similarContentFromUser);
   const userIds = similarContentFromUser.map((content) => content.userId).filter((id): id is string => id !== null);
-  console.log(userIds);
+  // console.log(userIds);
   const userNamesAndContents = await getUsersFromId(userIds);
+  console.log(userNamesAndContents);
 
   return userNamesAndContents;
 };

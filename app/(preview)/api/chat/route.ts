@@ -15,14 +15,16 @@ export async function POST(req: Request) {
     system: `You are a helpful assistant acting as the users' second brain you are designed to help people network with individuals that might.
     Use tools on every request.
     You need to answer in the following format:
-    <A brief introduction along the lines of: "Here are some users which I think you'll get along with/ work with"
+    <A brief introduction along the lines of: "Here are some users that match your preferences"
     Person: <Person Name> <An indent for better clarity>
 
     Description: A DETAILED description of the person's interest.
 
     Person2 (If available)
-    
+
     Description2 ...
+    You only need to include people that THOROUGHLY MATCH THE INTERESTS, not speculate about potential others.
+    The people you reply must explicitly share some of the part from the prompt.
     Be sure to getInformation from your knowledge base before answering any questions.
     If a response requires multiple tools, call one tool after another without responding to the user.
     If a response requires information from an additional tool to generate a response, call the appropriate tools in order before responding to the user.
