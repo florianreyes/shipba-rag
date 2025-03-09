@@ -77,7 +77,7 @@ export function Navbar() {
               <div className="h-6 w-6 rounded-md flex items-center justify-center">
                 <span className="text-lg text-gray-500">+</span>
               </div>
-              <span className="text-sm text-gray-500">Add new workspace</span>
+              <span className="text-sm text-gray-500">Agregar comunidad</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

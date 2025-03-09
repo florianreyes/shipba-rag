@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useForm, UseFormReturn } from "react-hook-form"
 import * as z from "zod"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -49,10 +49,17 @@ const formSchema = z.object({
   }
 )
 
+type FormData = z.infer<typeof formSchema>
+
+// Extend UseFormReturn to include our custom resetInterests function
+interface ExtendedUseFormReturn extends UseFormReturn<FormData> {
+  resetInterests?: () => void;
+}
+
 export function ShortForm({ darkMode }: { darkMode: boolean }) {
   const [isSuccess, setIsSuccess] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
@@ -67,9 +74,9 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
       "¿Qué influencers o cuentas relevantes en redes sociales te interesan?": "",
       "Contanos algo de vos que todos deberían saber:": "",
     },
-  })
+  }) as ExtendedUseFormReturn
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: FormData) {
     setIsSubmitting(true);
     try {
       const { username, email, x_handle, telegram_handle, instagram_handle, ...contentFields } = data;
@@ -96,6 +103,10 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
       if (result) {
         setIsSuccess(true);
         form.reset();
+        // Reset interests using the exposed function
+        if (form.resetInterests) {
+          form.resetInterests();
+        }
         // Reset success message after 3 seconds
         setTimeout(() => setIsSuccess(false), 3000);
       }

@@ -135,7 +135,7 @@ const interests = [
   },
 ]
 
-export function InterestCheckboxes({ form, darkMode }: { form: any; darkMode: boolean }) {
+export function InterestCheckboxes({ form, darkMode, onReset }: { form: any; darkMode: boolean; onReset?: () => void }) {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([])
   const [activeInterest, setActiveInterest] = useState<string | null>(null)
 
@@ -143,6 +143,22 @@ export function InterestCheckboxes({ form, darkMode }: { form: any; darkMode: bo
   useEffect(() => {
     form.setValue("Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:", selectedInterests)
   }, [selectedInterests, form])
+
+  // Add reset function
+  const resetInterests = () => {
+    setSelectedInterests([])
+    setActiveInterest(null)
+    if (onReset) {
+      onReset()
+    }
+  }
+
+  // Expose reset function to parent
+  useEffect(() => {
+    if (form) {
+      form.resetInterests = resetInterests
+    }
+  }, [form])
 
   const toggleInterest = (id: string) => {
     // If already selected, deselect it and hide subcategories
