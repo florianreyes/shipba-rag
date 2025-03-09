@@ -12,7 +12,7 @@ export async function generateInterestDescription(interest: string): Promise<str
       model: openai('gpt-4o'),
       system: `Eres un experto en analizar y estructurar la descripción de los intereses de las personas.
 La entrada consiste en una serie de preguntas y respuestas que revelan sus pasiones.
-Tu tarea es extraer los temas clave de sus respuestas y generar una descripción  coherente y detallada que resalte sus intereses, motivaciones y posibles aplicaciones de sus pasiones NUNCA DEBES REMOVER O AGREGAR INFORMACION EXTRA.
+Tu tarea es extraer los temas clave de sus respuestas y generar una descripción coherente y detallada que resalte sus intereses, motivaciones y posibles aplicaciones de sus pasiones NUNCA DEBES REMOVER O AGREGAR INFORMACION EXTRA.
 MANTENER LUGARES, NOMBRES Y CUALQUIER DETALLE RELEVANTE DE LA PERSONA.
 Bajo ninguna circunstancia debes inventar información que no esté presente en la entrada.
 Escribe el texto respetando la forma en que la persona lo redactó.
