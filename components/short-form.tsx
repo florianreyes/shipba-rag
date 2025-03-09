@@ -27,9 +27,7 @@ const formSchema = z.object({
   "Si tuvieras un día libre completo, ¿en qué actividad o proyecto lo invertirías?": z.string().min(5, {
     message: "Por favor cuéntanos qué harías.",
   }),
-  "Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:": z.array(z.string()).min(1, {
-    message: "Por favor selecciona al menos un tema de interés.",
-  }),
+  "Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:": z.array(z.string()),
   "¿Qué te gustaría aprender o explorar en los próximos meses?": z.string().min(5, {
     message: "Por favor comparte qué te gustaría aprender.",
   }),
