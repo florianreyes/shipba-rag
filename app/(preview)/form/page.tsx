@@ -16,8 +16,8 @@ export default function Home() {
 
   return (
     <main
-  className={`min-h-screen w-full py-12 ${darkMode ? "bg-black text-white" : "bg-gray-50 text-gray-900"} flex flex-col items-center justify-center transition-colors duration-200`}
->
+      className={`min-h-screen w-full py-12 ${darkMode ? "bg-black text-white" : "bg-gray-50 text-gray-900"} flex flex-col items-center justify-center transition-colors duration-200`}
+    >
       <div className="container max-w-4xl">
         <div className="flex justify-end mb-4">
           <Button
@@ -38,14 +38,14 @@ export default function Home() {
             SHIP BA Community
           </h1>
           <p className={`text-lg md:text-xl ${darkMode ? "text-white/80" : "text-gray-600"} max-w-2xl mx-auto`}>
-          Crea tu perfil para poder conectar con la gente que quieras de SHIP BA a partir de sus intereses y habilidades.          </p>
+            Crea tu perfil para poder conectar con la gente que quieras de SHIP BA a partir de sus intereses y habilidades.          </p>
         </div>
 
         <Card
           className={`border ${darkMode ? "bg-gray-900 border-gray-800 text-white" : "bg-white border-gray-200 text-gray-900"}`}
         >
           <CardHeader className={`border-b ${darkMode ? "border-gray-800" : "border-gray-200"}`}>
-            <CardTitle className="text-2xl">Queremos conocerte</CardTitle>
+            <CardTitle className="text-2xl">Contanos de Vos</CardTitle>
             <CardDescription className={darkMode ? "text-gray-400" : "text-gray-500"}>
               Completá el formulario a continuación
             </CardDescription>
