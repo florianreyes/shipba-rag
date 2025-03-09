@@ -37,6 +37,12 @@ const formSchema = z.object({
   "Contanos algo de vos que todos deberían saber:": z.string().min(5, {
     message: "Por favor comparte algo sobre ti.",
   }),
+  "🚀 ¿Trabajaste alguna vez en un proyecto personal o paralelo?": z.string().min(5, {
+    message: "Por favor cuéntanos sobre tu experiencia.",
+  }),
+  "💼 ¿Actualmente estás buscando nuevas oportunidades profesionales, o quizás te interesa sumar talento a tu equipo?": z.string().min(5, {
+    message: "Por favor comparte tu situación profesional actual.",
+  }),
 }).refine(
   (data) => {
     return data.x_handle.length > 0 || 
@@ -73,6 +79,8 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
       "¿Qué te gustaría aprender o explorar en los próximos meses?": "",
       "¿Qué influencers o cuentas relevantes en redes sociales te interesan?": "",
       "Contanos algo de vos que todos deberían saber:": "",
+      "🚀 ¿Trabajaste alguna vez en un proyecto personal o paralelo?": "",
+      "💼 ¿Actualmente estás buscando nuevas oportunidades profesionales, o quizás te interesa sumar talento a tu equipo?": "",
     },
   }) as ExtendedUseFormReturn
 
@@ -360,6 +368,60 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
                 <FormControl>
                   <Textarea
                     placeholder="Algo sobre ti que quieras compartir..."
+                    {...field}
+                    className={`text-sm md:text-base ${
+                      darkMode
+                        ? "bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-gray-500 min-h-[80px]"
+                        : "bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 min-h-[80px]"
+                    }`}
+                  />
+                </FormControl>
+                <FormMessage className="text-red-500 text-xs md:text-sm" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="🚀 ¿Trabajaste alguna vez en un proyecto personal o paralelo?"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
+                  🚀 ¿Trabajaste alguna vez en un proyecto personal o paralelo?
+                  <p className="text-xs text-gray-500 mt-1 font-normal">
+                    Contanos brevemente de qué se trató y cómo resultó esa experiencia para vos (¡vale todo! éxitos, aprendizajes o anécdotas interesantes).
+                  </p>
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Tu experiencia con proyectos personales..."
+                    {...field}
+                    className={`text-sm md:text-base ${
+                      darkMode
+                        ? "bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-gray-500 min-h-[80px]"
+                        : "bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 min-h-[80px]"
+                    }`}
+                  />
+                </FormControl>
+                <FormMessage className="text-red-500 text-xs md:text-sm" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="💼 ¿Actualmente estás buscando nuevas oportunidades profesionales, o quizás te interesa sumar talento a tu equipo?"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
+                  💼 ¿Actualmente estás buscando nuevas oportunidades profesionales, o quizás te interesa sumar talento a tu equipo?
+                  <p className="text-xs text-gray-500 mt-1 font-normal">
+                    Contanos si estás abierto a nuevas propuestas, si querés contratar gente o estás explorando algún cambio profesional.
+                  </p>
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Tu situación profesional actual..."
                     {...field}
                     className={`text-sm md:text-base ${
                       darkMode
