@@ -42,9 +42,9 @@ export default function Home() {
         </div>
 
         <Card
-          className={`border ${darkMode ? "bg-gray-900 border-gray-800 text-white" : "bg-white border-gray-200 text-gray-900"}`}
+          className={`border ${darkMode ? "bg-gray-900 border-neutral-700 text-white" : "bg-white border-gray-200 text-gray-900"}`}
         >
-          <CardHeader className={`border-b ${darkMode ? "border-gray-800" : "border-gray-200"}`}>
+          <CardHeader className={`border-b ${darkMode ? "border-neutral-700" : "border-gray-200"}`}>
             <CardTitle className="text-2xl">Contanos de Vos</CardTitle>
             <CardDescription className={darkMode ? "text-gray-400" : "text-gray-500"}>
               Completá el formulario a continuación

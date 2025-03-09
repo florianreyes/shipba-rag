@@ -58,6 +58,7 @@ export function PersonCards({ persons, isLoading = false }: PersonCardsProps) {
             key={`${person.name}-${index}`}
             name={person.name}
             description={person.contentSummary}
+            fullDescription={person.content}
             keywords={person.keywords}
             socialHandles={person.socialHandles}
           />

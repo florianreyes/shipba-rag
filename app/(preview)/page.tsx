@@ -130,17 +130,17 @@ export default function Chat() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={isLoading}
-                  className="w-full pr-12 rounded-full h-12 pl-5 text-lg transition-all duration-300 ease-in-out focus:ring-2 focus:ring-black focus:ring-opacity-50 focus:shadow-lg"
+                  className="w-full pr-12 rounded-full h-12 pl-5 text-lg transition-all duration-300 ease-in-out focus:ring-2 focus:ring-black dark:focus:ring-white focus:ring-opacity-50 focus:shadow-lg dark:border-neutral-700 dark:shadow-md dark:shadow-neutral-900/10"
                 />
                 <Button 
                   type="submit" 
                   disabled={isLoading} 
-                  className="absolute right-1 top-1 rounded-full w-10 h-10 p-0 bg-black hover:bg-gray-800 transition-all duration-300 ease-in-out hover:scale-105"
+                  className="absolute right-1 top-1 rounded-full w-10 h-10 p-0 bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 dark:text-black transition-all duration-300 ease-in-out hover:scale-105"
                 >
                   {isLoading ? (
                     <LoadingIcon />
                   ) : (
-                    <ArrowUp size={18} />
+                    <ArrowUp size={18} className="text-white dark:text-black" />
                   )}
                 </Button>
               </motion.div>
@@ -159,7 +159,6 @@ export default function Chat() {
           )}
           
           <AnimatePresence mode="wait">
-            console.log(persons)
             {(persons.length > 0 || isLoading || lastQuery) && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -177,7 +176,7 @@ export default function Chat() {
                       transition: { delay: 0.2, duration: 0.4 }
                     }}
                   >
-                    <p className="text-lg font-medium">Búsqueda: <span className="italic">{lastQuery}</span></p>
+                    <p className="text-lg font-medium">Búsqueda: <span className="italic text-muted-foreground">{lastQuery}</span></p>
                   </motion.div>
                 )}
                 <PersonCards persons={persons} isLoading={isLoading} />

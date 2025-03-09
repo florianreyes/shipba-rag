@@ -15,9 +15,9 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
-        twitter: "border-transparent bg-black text-white hover:bg-black/80",
-        telegram: "border-transparent bg-[#0088cc] text-white hover:bg-[#0088cc]/80",
-        instagram: "border-transparent bg-[#e95950] text-white hover:bg-[#e95950]/80",
+        twitter: "border-transparent bg-black text-white hover:bg-black/80 dark:bg-neutral-800 dark:hover:bg-neutral-700",
+        telegram: "border-transparent bg-[#0088cc] text-white hover:bg-[#0088cc]/80 dark:bg-[#0088cc]/80 dark:hover:bg-[#0088cc]",
+        instagram: "border-transparent bg-[#e95950] text-white hover:bg-[#e95950]/80 dark:bg-[#e95950]/80 dark:hover:bg-[#e95950]",
         blue: "border-transparent bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
         green: "border-transparent bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
         yellow: "border-transparent bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",

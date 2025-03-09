@@ -6,6 +6,7 @@ import { ChevronDown, User } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 type Workspace = {
   id: string
@@ -82,9 +83,12 @@ export function Navbar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <button className="p-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800">
-          <User className="h-5 w-5 text-black dark:text-white" />
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button className="p-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800">
+            <User className="h-5 w-5 text-black dark:text-white" />
+          </button>
+        </div>
       </div>
     </div>
   )
