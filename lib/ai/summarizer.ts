@@ -47,32 +47,86 @@ Please extract exactly ${count} single-word keywords from this content. Separate
 }
 
 /**
- * Creates a simplified summary of a description
+ * Creates a simplified summary of a description and determines if it's relevant to a query
  * @param description The description to summarize
+ * @param userQuery The user's search query to check relevance against
  * @param maxLength Optional maximum length for the summary in characters (default: 150)
- * @returns A concise summary of the description
+ * @returns An object containing the summary and whether it should be rendered
  */
-export async function summarizeDescription(description: string, maxLength: number = 150): Promise<string> {
+export async function summarizeDescription(
+  description: string, 
+  userQuery: string,
+  maxLength: number = 150
+): Promise<{ summary: string; shouldRender: boolean }> {
   try {
     const { text } = await generateText({
       model: openai('gpt-4o'),
-      system: `You are an expert at creating brief, clear summaries.
-Your task is to condense the provided description into a concise summary.
-Focus only on the most essential information.
-Use simple, direct language and complete sentences.
-The summary should be easy to understand at a glance. Generar todo en español. todo en minusculas`,
-      prompt: `Description: "${description}"
-Please provide a simplified summary in ${maxLength} characters or less:`,
+      system: `Eres un experto en crear resúmenes breves y claros.
+Tu tarea es analizar la descripción proporcionada y crear un resumen informativo.
+
+Reglas importantes:
+- Usa lenguaje simple y directo
+- Todo en español y en minúsculas
+- El resumen debe ser completo y descriptivo
+- Incluye información general sobre la persona Y aspectos relacionados con la consulta
+- Sé ESTRICTO con las coincidencias específicas:
+  * Si buscan un deporte específico (ej: tenis), NO mostrar personas que solo juegan otros deportes
+  * Si buscan una actividad específica, NO mostrar personas que hacen actividades similares pero diferentes
+  * Solo indica shouldRender: true si hay una coincidencia EXACTA con lo que se busca
+- Solo indica shouldRender: false si:
+  * La descripción es completamente irrelevante
+  * O si buscan algo específico (ej: tenis) y la persona no lo hace, aunque haga actividades similares
+
+Formato de respuesta:
+Devuelve SOLO un objeto JSON sin formato markdown. No uses \`\`\` ni otros caracteres especiales.
+{
+  "summary": "resumen completo de la persona, incluyendo aspectos generales y relacionados con la consulta",
+  "shouldRender": true/false,
+  "reason": "solo si shouldRender es false, explica por qué"
+}`,
+      prompt: `Descripción: "${description}"
+Consulta del usuario: "${userQuery}"
+
+Crea un resumen completo que:
+1. Describa a la persona en general
+2. Destaque aspectos relacionados con la consulta (si existen)
+3. No exceda ${maxLength} caracteres
+
+Responde SOLO con el objeto JSON:`,
     });
 
-    return text.length > maxLength ? text.substring(0, maxLength) : text;
+    try {
+      // Limpiamos el texto de posibles backticks o caracteres markdown
+      const cleanText = text.replace(/\`\`\`json|\`\`\`|\`/g, '').trim();
+      const result = JSON.parse(cleanText);
+      
+      // Si shouldRender es false, usamos la razón como resumen
+      const finalSummary = result.shouldRender ? result.summary : result.reason || result.summary;
+      
+      return {
+        summary: finalSummary.length > maxLength ? 
+          finalSummary.substring(0, maxLength) : 
+          finalSummary,
+        shouldRender: result.shouldRender
+      };
+    } catch (parseError) {
+      console.error('Error parsing JSON response:', parseError);
+      console.log('Problematic text:', text);
+      // Si no podemos parsear el JSON, asumimos que el texto es el resumen
+      return {
+        summary: text.length > maxLength ? text.substring(0, maxLength) : text,
+        shouldRender: true // por defecto mostramos si hay error de parseo
+      };
+    }
   } catch (error) {
     console.error('Error summarizing description:', error);
-    // Fallback to truncating the description
-    if (description.length > maxLength) {
-      const truncated = description.substring(0, maxLength - 3);
-      return truncated.substring(0, truncated.lastIndexOf(' ')) + '...';
-    }
-    return description;
+    // Fallback a truncar la descripción
+    const truncated = description.length > maxLength ? 
+      description.substring(0, maxLength - 3) + '...' : 
+      description;
+    return {
+      summary: truncated,
+      shouldRender: true // por defecto mostramos en caso de error
+    };
   }
 }

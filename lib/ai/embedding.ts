@@ -38,7 +38,10 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
 };
 
 
-export const getUsersFromId = async (ids: string[]): Promise<Array<{
+export const getUsersFromId = async (
+  ids: string[],
+  userQuery: string
+): Promise<Array<{
   name: string;
   content: string;
   contentSummary: string;
@@ -63,8 +66,14 @@ export const getUsersFromId = async (ids: string[]): Promise<Array<{
   // Process users with summarization and keyword extraction
   const processedUsers = await Promise.all(
     usersList.map(async (user) => {
-      // Use the new summarizeDescription function
-      const contentSummary = await summarizeDescription(user.content);
+      console.log(user.content);
+      // Use the new summarizeDescription function with userQuery
+      const { summary: contentSummary, shouldRender } = await summarizeDescription(user.content, userQuery);
+      
+      // If shouldRender is false, return null to filter out later
+      if (!shouldRender) {
+        return null;
+      }
 
       // Use the new generateKeywordBadges function for single-word keywords
       const keywords = await generateKeywordBadges(user.content, 5);
@@ -85,7 +94,8 @@ export const getUsersFromId = async (ids: string[]): Promise<Array<{
     })
   );
 
-  return processedUsers;
+  // Filter out null results (where shouldRender was false)
+  return processedUsers.filter((user): user is NonNullable<typeof user> => user !== null);
 };
 
 export const findRelevantContent = async (userQuery: string) => {
@@ -101,7 +111,7 @@ export const findRelevantContent = async (userQuery: string) => {
   console.log(similarContentFromUser);
   const userIds = similarContentFromUser.map((content) => content.userId).filter((id): id is string => id !== null);
   // console.log(userIds);
-  const userNamesAndContents = await getUsersFromId(userIds);
+  const userNamesAndContents = await getUsersFromId(userIds, userQuery);
   console.log(userNamesAndContents);
 
   return userNamesAndContents;

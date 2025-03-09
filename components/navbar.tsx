@@ -67,7 +67,7 @@ export function Navbar() {
               </DropdownMenuItem>
             ))}
             <DropdownMenuItem
-              className="flex items-center gap-2 cursor-pointer text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+              className="flex items-center gap-2 mt-1 cursor-pointer text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
               onClick={() => {
                 // Add functionality to create a new workspace
                 toast?.("This feature is coming soon", {

@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     // Generate similar questions based on user query 
     const { object } = await generateObject({
       model: openai("gpt-4o"),
-      system: "Eres un asistente de busqueda de personas a partir de una consulta sobre interses. Analiza la consulta del usuario y genera preguntas/frases similares.",
+      system: "Eres un asistente de busqueda de personas a partir de una consulta sobre intereses. Analiza la consulta del usuario y genera preguntas/frases similares. Las preguntas deben ser simples y directas, sin agregar calificativos o condiciones que no estén en la consulta original. Por ejemplo, si alguien busca personas que juegan tenis, no agregues términos como 'profesional' o 'famoso'.",
       schema: z.object({
         questions: z
           .array(z.string())
