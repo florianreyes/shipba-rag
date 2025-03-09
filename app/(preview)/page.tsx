@@ -85,7 +85,7 @@ export default function Chat() {
                 minLength={3}
                 required
                 value={input}
-                placeholder={"Ask me anything..."}
+                placeholder={"A quién te gustaría conocer?..."}
                 onChange={handleInputChange}
               />
             </form>

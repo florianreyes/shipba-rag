@@ -107,16 +107,6 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
-        {isSuccess && (
-          <div className={`p-4 mb-4 rounded-lg ${
-            darkMode 
-              ? "bg-green-900/20 text-green-400 border border-green-800" 
-              : "bg-green-50 text-green-600 border border-green-200"
-          }`}>
-            ¡Enviado correctamente!
-          </div>
-        )}
-
         <div className="space-y-4">
           <FormField
             control={form.control}
@@ -385,6 +375,16 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
               'Enviar'
             )}
           </Button>
+
+          {isSuccess && (
+            <div className={`p-4 mt-4 rounded-lg ${
+              darkMode 
+                ? "bg-green-900/20 text-green-400 border border-green-800" 
+                : "bg-green-50 text-green-600 border border-green-200"
+            }`}>
+              ¡Enviado correctamente!
+            </div>
+          )}
         </div>
       </form>
     </Form>
