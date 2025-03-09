@@ -65,16 +65,16 @@ export const getUsersFromId = async (ids: string[]): Promise<Array<{
     usersList.map(async (user) => {
       // Use the new summarizeDescription function
       const contentSummary = await summarizeDescription(user.content);
-      
+
       // Use the new generateKeywordBadges function for single-word keywords
       const keywords = await generateKeywordBadges(user.content, 5);
-      
+
       // Collect non-null social handles
       const socialHandles: { x?: string; telegram?: string; instagram?: string } = {};
       if (user.x_handle) socialHandles.x = user.x_handle;
       if (user.telegram_handle) socialHandles.telegram = user.telegram_handle;
       if (user.instagram_handle) socialHandles.instagram = user.instagram_handle;
-      
+
       return {
         name: user.name,
         content: user.content,
@@ -94,7 +94,7 @@ export const findRelevantContent = async (userQuery: string) => {
   const similarContentFromUser = await db
     .select({ id: embeddings.id, userId: embeddings.userId, name: embeddings.content, similarity })
     .from(embeddings)
-    .where(gt(similarity, 0.82))
+    .where(gt(similarity, 0.8))
     .orderBy((t) => desc(t.similarity))
     .limit(4);
 
