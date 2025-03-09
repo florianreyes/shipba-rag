@@ -8,13 +8,13 @@ export const maxDuration = 30;
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
-  
+
   // Extract the user's last message
   const lastMessage = messages[messages.length - 1];
   const userQuery = lastMessage.content;
-  
+
   try {
-    // Generate similar questions based on user query
+    // Generate similar questions based on user query 
     const { object } = await generateObject({
       model: openai("gpt-4o"),
       system: "Eres un asistente de busqueda de personas a partir de una consulta sobre interses. Analiza la consulta del usuario y genera preguntas/frases similares.",
@@ -29,18 +29,18 @@ export async function POST(req: Request) {
     });
 
     console.log("Preguntas generadas:", object.questions);
-    
+
     // Get relevant content using the generated questions
     const similarQuestions = object.questions;
     const results = await Promise.all(
       similarQuestions.map(async (question) => await findRelevantContent(question))
     );
-    
+
     // Flatten the array of arrays and remove duplicates based on 'name'
     const uniqueResults = Array.from(
       new Map(results.flat().map((item) => [item?.name, item])).values()
     );
-    
+
     // Return the unique results
     return Response.json({ persons: uniqueResults });
   } catch (error) {
