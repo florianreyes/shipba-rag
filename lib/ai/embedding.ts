@@ -36,12 +36,38 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
   return embedding;
 };
 
-export const getUsersFromId = async (ids: string[]): Promise<string[]> => {
+// export const getUsersFromId = async (ids: string[]): Promise<string[]> => {
+//   const usersList = await db
+//     .select({ name: users.name, content: users.content })
+//     .from(users)
+//     .where(inArray(users.id, ids));
+//   return usersList.map((user) => user.name);
+// };
+
+// export const findRelevantContent = async (userQuery: string) => {
+//   const userQueryEmbedded = await generateEmbedding(userQuery);
+//   const similarity = sql<number>`1 - (${cosineDistance(embeddings.embedding, userQueryEmbedded)})`;
+//   const similarContentFromUser = await db
+//     .select({ id: embeddings.id, userId: embeddings.userId, name: embeddings.content, similarity })
+//     .from(embeddings)
+//     .where(gt(similarity, 0.3))
+//     .orderBy((t) => desc(t.similarity))
+//     .limit(8);
+
+//   console.log(similarContentFromUser);
+
+//   const userIds = similarContentFromUser.map((content) => content.userId).filter((id): id is string => id !== null);
+//   const userNames = await getUsersFromId(userIds);
+
+//   return { similarContentFromUser, userNames };
+// };
+
+export const getUsersFromId = async (ids: string[]): Promise<Array<{ name: string; content: string }>> => {
   const usersList = await db
     .select({ name: users.name, content: users.content })
     .from(users)
     .where(inArray(users.id, ids));
-  return usersList.map((user) => user.name);
+  return usersList.map((user) => ({ name: user.name, content: user.content }));
 };
 
 export const findRelevantContent = async (userQuery: string) => {
@@ -50,13 +76,15 @@ export const findRelevantContent = async (userQuery: string) => {
   const similarContentFromUser = await db
     .select({ id: embeddings.id, userId: embeddings.userId, name: embeddings.content, similarity })
     .from(embeddings)
-    .where(gt(similarity, 0.3))
+    .where(gt(similarity, 0.7))
     .orderBy((t) => desc(t.similarity))
-    .limit(8);
+    .limit(4);
 
+  console.log(similarContentFromUser);
   const userIds = similarContentFromUser.map((content) => content.userId).filter((id): id is string => id !== null);
-  const userNames = await getUsersFromId(userIds);
+  console.log(userIds);
+  const userNamesAndContents = await getUsersFromId(userIds);
 
-  return { similarContentFromUser, userNames };
+  return userNamesAndContents;
 };
 
