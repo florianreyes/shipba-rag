@@ -18,13 +18,16 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Por favor ingresa un email válido.",
   }),
+  x_handle: z.string(),
+  telegram_handle: z.string(),
+  instagram_handle: z.string(),
   "Imaginá que te presentamos en un podcast, ¿qué diríamos sobre vos en una frase?": z.string().min(5, {
     message: "Por favor proporciona una breve introducción.",
   }),
   "Si tuvieras un día libre completo, ¿en qué actividad o proyecto lo invertirías?": z.string().min(5, {
     message: "Por favor cuéntanos qué harías.",
   }),
-  "Elegí 3 temas que te apasionen y sobre los cuales te gustaría conectar con otros:": z.array(z.string()).min(1, {
+  "Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:": z.array(z.string()).min(1, {
     message: "Por favor selecciona al menos un tema de interés.",
   }),
   "¿Qué te gustaría aprender o explorar en los próximos meses?": z.string().min(5, {
@@ -36,7 +39,17 @@ const formSchema = z.object({
   "Contanos algo de vos que todos deberían saber:": z.string().min(5, {
     message: "Por favor comparte algo sobre ti.",
   }),
-})
+}).refine(
+  (data) => {
+    return data.x_handle.length > 0 || 
+           data.telegram_handle.length > 0 || 
+           data.instagram_handle.length > 0;
+  },
+  {
+    message: "Por favor ingresa al menos una red social.",
+    path: ["x_handle"], // This will show the error on the X handle field
+  }
+)
 
 export function ShortForm({ darkMode }: { darkMode: boolean }) {
   const [isSuccess, setIsSuccess] = useState(false)
@@ -46,19 +59,22 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
     defaultValues: {
       username: "",
       email: "",
+      x_handle: "",
+      telegram_handle: "",
+      instagram_handle: "",
       "Imaginá que te presentamos en un podcast, ¿qué diríamos sobre vos en una frase?": "",
       "Si tuvieras un día libre completo, ¿en qué actividad o proyecto lo invertirías?": "",
-      "Elegí 3 temas que te apasionen y sobre los cuales te gustaría conectar con otros:": [],
+      "Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:": [],
       "¿Qué te gustaría aprender o explorar en los próximos meses?": "",
       "¿Qué influencers o cuentas relevantes en redes sociales te interesan?": "",
       "Contanos algo de vos que todos deberían saber:": "",
     },
   })
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const { username, email, ...contentFields } = values;
+      const { username, email, x_handle, telegram_handle, instagram_handle, ...contentFields } = data;
       
       // Concatenate all content fields with the question as the key
       const content = Object.entries(contentFields)
@@ -73,6 +89,9 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
       const result = await createUser({
         name: username,
         mail: email,
+        x_handle,
+        telegram_handle,
+        instagram_handle,
         content,
       });
 
@@ -146,6 +165,79 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
             )}
           />
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="col-span-full">
+              <h3 className={`text-lg font-small ${darkMode ? "text-white" : "text-gray-900"}`}>
+                Redes Sociales (al menos una)
+              </h3>
+            </div>
+            <FormField
+              control={form.control}
+              name="x_handle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>X (Twitter)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Sin el @ (ej: usuario)"
+                      {...field}
+                      className={`text-sm md:text-base ${
+                        darkMode
+                          ? "bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-gray-500"
+                          : "bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-gray-400"
+                      }`}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-xs md:text-sm" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="instagram_handle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>Instagram</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Sin el @ (ej: usuario)"
+                      {...field}
+                      className={`text-sm md:text-base ${
+                        darkMode
+                          ? "bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-gray-500"
+                          : "bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-gray-400"
+                      }`}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-xs md:text-sm" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="telegram_handle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>Telegram</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Sin el @ (ej: usuario)"
+                      {...field}
+                      className={`text-sm md:text-base ${
+                        darkMode
+                          ? "bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-gray-500"
+                          : "bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-gray-400"
+                      }`}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-xs md:text-sm" />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
             name="Imaginá que te presentamos en un podcast, ¿qué diríamos sobre vos en una frase?"
@@ -196,7 +288,7 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="Elegí 3 temas que te apasionen y sobre los cuales te gustaría conectar con otros:"
+            name="Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:"
             render={() => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>

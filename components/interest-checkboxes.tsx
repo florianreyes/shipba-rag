@@ -115,7 +115,7 @@ const interests = [
   },
   {
     id: "educacion",
-    label: "Educación y Aprendizaje Continuo",
+    label: "Educación y Aprendizaje",
     color: "bg-lime-600",
     subcategories: [
       { id: "educacion-idiomas", label: "Idiomas" },
@@ -131,16 +131,6 @@ const interests = [
       { id: "deportesalternativos-escalada", label: "Escalada" },
       { id: "deportesalternativos-senderismo", label: "Senderismo" },
       { id: "deportesalternativos-yoga", label: "Yoga" },
-    ],
-  },
-  {
-    id: "innovacionculinaria",
-    label: "Innovacion Culinaria",
-    color: "bg-fuchsia-600",
-    subcategories: [
-      { id: "innovacionculinaria-molecular", label: "Cocina Molecular" },
-      { id: "innovacionculinaria-fusion", label: "Cocina Fusión" },
-      { id: "innovacionculinaria-sostenible", label: "Gastronomía Sostenible" },
     ],
   },
 ]
@@ -269,10 +259,7 @@ export function InterestCheckboxes({ form, darkMode }: { form: any; darkMode: bo
                 borderColorClass = darkMode ? 'border-teal-400' : 'border-teal-600';
                 bgColorClass = 'bg-teal-600';
                 break;
-              case 'innovacionculinaria':
-                borderColorClass = darkMode ? 'border-fuchsia-400' : 'border-fuchsia-600';
-                bgColorClass = 'bg-fuchsia-600';
-                break;
+        
             }
             
             return (

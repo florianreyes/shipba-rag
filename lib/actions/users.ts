@@ -13,7 +13,7 @@ import { generateInterestDescription } from "../ai/curator";
 export const createUser = async (input: NewUserParams) => {
   console.log("Entre. Creando User...");
   try {
-    var { name, mail, content } = insertUserSchema.parse(input);
+    var { name, mail, x_handle, telegram_handle, instagram_handle, content } = insertUserSchema.parse(input);
     console.log("Contenido original: " + content);
 
     content = await generateInterestDescription(content);
@@ -21,7 +21,7 @@ export const createUser = async (input: NewUserParams) => {
     
     const [user] = await db
       .insert(users)
-      .values({ name, mail, content })
+      .values({ name, mail, x_handle, telegram_handle, instagram_handle, content })
       .returning();
 
     const embeddings = await generateEmbeddings(content);

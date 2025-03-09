@@ -11,6 +11,9 @@ export const users = pgTable("users", {
     .$defaultFn(() => nanoid()),
   name: text("name").notNull(),
   mail: text("mail").notNull(),
+  x_handle: text("x_handle"),
+  telegram_handle: text("telegram_handle"),
+  instagram_handle: text("instagram_handle"),
   content: text("content").notNull(),
   createdAt: timestamp("created_at")
     .notNull()
@@ -22,7 +25,11 @@ export const users = pgTable("users", {
 
 // Schema for users - used to validate API requests
 export const insertUserSchema = createSelectSchema(users)
-  .extend({})
+  .extend({
+    x_handle: z.string().optional().nullable(),
+    telegram_handle: z.string().optional().nullable(),
+    instagram_handle: z.string().optional().nullable(),
+  })
   .omit({
     id: true,
     createdAt: true,

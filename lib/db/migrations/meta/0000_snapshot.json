@@ -1,5 +1,5 @@
 {
-  "id": "76838f2a-73a0-4cfb-86c7-422dca78803b",
+  "id": "a93939d9-fa70-46e3-b8c8-3ba45c5ae7cb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -93,6 +93,24 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "x_handle": {
+          "name": "x_handle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telegram_handle": {
+          "name": "telegram_handle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instagram_handle": {
+          "name": "instagram_handle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "content": {
           "name": "content",
@@ -204,6 +222,19 @@
             "id"
           ],
           "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "workspaces_users_user_id_users_id_fk": {
+          "name": "workspaces_users_user_id_users_id_fk",
+          "tableFrom": "workspaces_users",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },

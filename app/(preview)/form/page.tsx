@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <main
-      className={`min-h-screen w-full ${darkMode ? "bg-black text-white" : "bg-gray-50 text-gray-900"} flex flex-col items-center justify-center p-4 transition-colors duration-200`}
+      className={`min-h-screen w-full ${darkMode ? "bg-black text-white" : "bg-gray-50 text-gray-900"} flex flex-col items-center justify-center transition-colors duration-200`}
     >
       <div className="container max-w-4xl">
         <div className="flex justify-end mb-4">
