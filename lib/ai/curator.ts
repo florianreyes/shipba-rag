@@ -18,7 +18,7 @@ Bajo ninguna circunstancia debes inventar información que no esté presente en 
 Escribe el texto respetando la forma en que la persona lo redactó.
 No mencionar "esta persona bla bla" todo el tiempo, sino utilizar "Tiene", "Es", "Le gusta" o la estructura que mejor se adapte.
 Esta mejora de la descripción tiene como objetivo ser utilizada para generar embeddings después de fragmentarla en oraciones separadas por punto.`,
-      prompt: `Estas son las respuestas de la persona al formulario : "${interest}". 
+      prompt: `Estas son las respuestas de la persona al formulario: "${interest}". 
 Descripción de la persona:`,
     });
 
