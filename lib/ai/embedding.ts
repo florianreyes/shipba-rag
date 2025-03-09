@@ -3,6 +3,7 @@ import { openai } from "@ai-sdk/openai";
 import { cosineDistance, desc, gt, sql, inArray } from "drizzle-orm";
 import { embeddings } from "../db/schema/embeddings";
 import { users } from "../db/schema/users";
+import { summarizeDescription, generateKeywordBadges } from "./summarizer";
 
 import { db } from "../db";
 
@@ -36,38 +37,55 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
   return embedding;
 };
 
-// export const getUsersFromId = async (ids: string[]): Promise<string[]> => {
-//   const usersList = await db
-//     .select({ name: users.name, content: users.content })
-//     .from(users)
-//     .where(inArray(users.id, ids));
-//   return usersList.map((user) => user.name);
-// };
 
-// export const findRelevantContent = async (userQuery: string) => {
-//   const userQueryEmbedded = await generateEmbedding(userQuery);
-//   const similarity = sql<number>`1 - (${cosineDistance(embeddings.embedding, userQueryEmbedded)})`;
-//   const similarContentFromUser = await db
-//     .select({ id: embeddings.id, userId: embeddings.userId, name: embeddings.content, similarity })
-//     .from(embeddings)
-//     .where(gt(similarity, 0.3))
-//     .orderBy((t) => desc(t.similarity))
-//     .limit(8);
-
-//   console.log(similarContentFromUser);
-
-//   const userIds = similarContentFromUser.map((content) => content.userId).filter((id): id is string => id !== null);
-//   const userNames = await getUsersFromId(userIds);
-
-//   return { similarContentFromUser, userNames };
-// };
-
-export const getUsersFromId = async (ids: string[]): Promise<Array<{ name: string; content: string }>> => {
+export const getUsersFromId = async (ids: string[]): Promise<Array<{
+  name: string;
+  content: string;
+  contentSummary: string;
+  keywords: string[];
+  socialHandles: {
+    x?: string;
+    telegram?: string;
+    instagram?: string;
+  }
+}>> => {
   const usersList = await db
-    .select({ name: users.name, content: users.content })
+    .select({
+      name: users.name,
+      content: users.content,
+      x_handle: users.x_handle,
+      telegram_handle: users.telegram_handle,
+      instagram_handle: users.instagram_handle
+    })
     .from(users)
     .where(inArray(users.id, ids));
-  return usersList.map((user) => ({ name: user.name, content: user.content }));
+
+  // Process users with summarization and keyword extraction
+  const processedUsers = await Promise.all(
+    usersList.map(async (user) => {
+      // Use the new summarizeDescription function
+      const contentSummary = await summarizeDescription(user.content);
+      
+      // Use the new generateKeywordBadges function for single-word keywords
+      const keywords = await generateKeywordBadges(user.content, 5);
+      
+      // Collect non-null social handles
+      const socialHandles: { x?: string; telegram?: string; instagram?: string } = {};
+      if (user.x_handle) socialHandles.x = user.x_handle;
+      if (user.telegram_handle) socialHandles.telegram = user.telegram_handle;
+      if (user.instagram_handle) socialHandles.instagram = user.instagram_handle;
+      
+      return {
+        name: user.name,
+        content: user.content,
+        contentSummary,
+        keywords,
+        socialHandles
+      };
+    })
+  );
+
+  return processedUsers;
 };
 
 export const findRelevantContent = async (userQuery: string) => {
@@ -76,7 +94,7 @@ export const findRelevantContent = async (userQuery: string) => {
   const similarContentFromUser = await db
     .select({ id: embeddings.id, userId: embeddings.userId, name: embeddings.content, similarity })
     .from(embeddings)
-    .where(gt(similarity, 0.7))
+    .where(gt(similarity, 0.82))
     .orderBy((t) => desc(t.similarity))
     .limit(4);
 
