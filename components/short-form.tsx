@@ -27,6 +27,7 @@ const formSchema = z.object({
   "Si tuvieras un día libre completo, ¿en qué actividad o proyecto lo invertirías?": z.string().min(5, {
     message: "Por favor cuéntanos qué harías.",
   }),
+  "Si tenes un perfil tecnico, que tecnologias usas?": z.string().optional(),
   "Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:": z.array(z.string()),
   "¿Qué te gustaría aprender o explorar en los próximos meses?": z.string().min(5, {
     message: "Por favor comparte qué te gustaría aprender.",
@@ -37,12 +38,8 @@ const formSchema = z.object({
   "Contanos algo de vos que todos deberían saber:": z.string().min(5, {
     message: "Por favor comparte algo sobre ti.",
   }),
-  "🚀 ¿Trabajaste alguna vez en un proyecto personal o paralelo?": z.string().min(5, {
-    message: "Por favor cuéntanos sobre tu experiencia.",
-  }),
-  "💼 ¿Actualmente estás buscando nuevas oportunidades profesionales, o quizás te interesa sumar talento a tu equipo?": z.string().min(5, {
-    message: "Por favor comparte tu situación profesional actual.",
-  }),
+  "🚀 ¿Trabajaste alguna vez en un proyecto personal o paralelo?": z.string().optional(),
+  "💼 ¿Estás buscando nuevas oportunidades profesionales actualmente? ¿Te interesa sumar talento a tu equipo?": z.string().optional(),
 }).refine(
   (data) => {
     return data.x_handle.length > 0 || 
@@ -75,12 +72,13 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
       instagram_handle: "",
       "Imaginá que te presentamos en un podcast, ¿qué diríamos sobre vos en una frase?": "",
       "Si tuvieras un día libre completo, ¿en qué actividad o proyecto lo invertirías?": "",
+      "Si tenes un perfil tecnico, que tecnologias usas?": "",
       "Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:": [],
       "¿Qué te gustaría aprender o explorar en los próximos meses?": "",
       "¿Qué influencers o cuentas relevantes en redes sociales te interesan?": "",
       "Contanos algo de vos que todos deberían saber:": "",
       "🚀 ¿Trabajaste alguna vez en un proyecto personal o paralelo?": "",
-      "💼 ¿Actualmente estás buscando nuevas oportunidades profesionales, o quizás te interesa sumar talento a tu equipo?": "",
+      "💼 ¿Estás buscando nuevas oportunidades profesionales actualmente? ¿Te interesa sumar talento a tu equipo?": "",
     },
   }) as ExtendedUseFormReturn
 
@@ -295,6 +293,30 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
+            name="Si tenes un perfil tecnico, que tecnologias usas?"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
+                  Si tenes un perfil tecnico, que tecnologias usas?
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Lenguajes, frameworks, herramientas, etc."
+                    {...field}
+                    className={`text-sm md:text-base ${
+                      darkMode
+                        ? "bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-gray-500 min-h-[80px]"
+                        : "bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 min-h-[80px]"
+                    }`}
+                  />
+                </FormControl>
+                <FormMessage className="text-red-500 text-xs md:text-sm" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:"
             render={() => (
               <FormItem>
@@ -410,11 +432,11 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="💼 ¿Actualmente estás buscando nuevas oportunidades profesionales, o quizás te interesa sumar talento a tu equipo?"
+            name="💼 ¿Estás buscando nuevas oportunidades profesionales actualmente? ¿Te interesa sumar talento a tu equipo?"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
-                  💼 ¿Actualmente estás buscando nuevas oportunidades profesionales, o quizás te interesa sumar talento a tu equipo?
+                  💼 ¿Estás buscando nuevas oportunidades profesionales actualmente? ¿Te interesa sumar talento a tu equipo?
                   <p className="text-xs text-gray-500 mt-1 font-normal">
                     Contanos si estás abierto a nuevas propuestas, si querés contratar gente o estás explorando algún cambio profesional.
                   </p>
