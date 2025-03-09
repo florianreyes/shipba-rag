@@ -38,8 +38,7 @@ export default function Home() {
             SHIPBA Community
           </h1>
           <p className={`text-lg md:text-xl ${darkMode ? "text-white/80" : "text-gray-600"} max-w-2xl mx-auto`}>
-            Crea tu perfil para poder conectar con la gente que quieras de Shipba a partir de sus intereses y habilidades.
-          </p>
+          Crea tu perfil para poder conectar con la gente que quieras de SHIP BA a partir de sus intereses y habilidades.          </p>
         </div>
 
         <Card
