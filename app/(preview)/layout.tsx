@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   title: "Mesh Community",
   description:
     "An app to network.",
+  icons: {
+    icon: "/mesh.ico",
+    apple: "/mesh.ico",
+  },
 };
 
 export default function RootLayout({
