@@ -362,29 +362,25 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
             )}
           />
 
-          <Button
-            type="submit"
-            className="bg-black hover:bg-gray-800 text-white w-full mt-6"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                Enviando...
-              </>
-            ) : (
-              'Enviar'
-            )}
-          </Button>
-
-          {isSuccess && (
-            <div className={`p-4 mt-4 rounded-lg ${
-              darkMode 
-                ? "bg-green-900/20 text-green-400 border border-green-800" 
-                : "bg-green-50 text-green-600 border border-green-200"
-            }`}>
-              ¡Enviado correctamente!
-            </div>
-          )}
+            <Button
+              type="submit"
+              className={`w-full mt-6 ${
+                isSuccess
+                  ? "bg-green-600 text-white cursor-not-allowed"
+                  : "bg-black hover:bg-gray-800 text-white"
+              }`}
+              disabled={isSubmitting || isSuccess}
+            >
+              {isSubmitting ? (
+                <>
+                  Enviando...
+                </>
+              ) : isSuccess ? (
+                'Enviado'
+              ) : (
+                'Enviar'
+              )}
+            </Button>
         </div>
       </form>
     </Form>
