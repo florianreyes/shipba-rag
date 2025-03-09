@@ -35,7 +35,7 @@ export default function Home() {
           <h1
             className={`text-4xl md:text-6xl font-bold tracking-tighter ${darkMode ? "text-white" : "text-gray-900"}`}
           >
-            SHIPBA Community
+            SHIP BA Community
           </h1>
           <p className={`text-lg md:text-xl ${darkMode ? "text-white/80" : "text-gray-600"} max-w-2xl mx-auto`}>
           Crea tu perfil para poder conectar con la gente que quieras de SHIP BA a partir de sus intereses y habilidades.          </p>
@@ -54,6 +54,9 @@ export default function Home() {
             <ShortForm darkMode={darkMode} />
           </CardContent>
         </Card>
+        <div className={`text-center mt-8 text-sm font-mono ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
+          made by Mesh
+        </div>
       </div>
     </main>
   )
