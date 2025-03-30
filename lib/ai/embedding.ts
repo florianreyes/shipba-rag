@@ -1,8 +1,9 @@
 import { embed, embedMany } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { cosineDistance, desc, gt, sql, inArray } from "drizzle-orm";
+import { cosineDistance, desc, gt, sql, inArray, and, eq } from "drizzle-orm";
 import { embeddings } from "../db/schema/embeddings";
 import { users } from "../db/schema/users";
+import { workspacesUsers } from "../db/schema/workspaces_users";
 import { summarizeDescription, generateKeywordBadges } from "./summarizer";
 
 import { db } from "../db";
@@ -98,22 +99,54 @@ export const getUsersFromId = async (
   return processedUsers.filter((user): user is NonNullable<typeof user> => user !== null);
 };
 
-export const findRelevantContent = async (userQuery: string) => {
+export const findRelevantContent = async (userQuery: string, workspaceId?: string) => {
   const userQueryEmbedded = await generateEmbedding(userQuery);
   const similarity = sql<number>`1 - (${cosineDistance(embeddings.embedding, userQueryEmbedded)})`;
-  const similarContentFromUser = await db
-    .select({ id: embeddings.id, userId: embeddings.userId, name: embeddings.content, similarity })
+  
+  // Base query
+  let query = db
+    .select({ 
+      id: embeddings.id, 
+      userId: embeddings.userId, 
+      name: embeddings.content, 
+      similarity 
+    })
     .from(embeddings)
-    .where(gt(similarity, 0.8))
+    .where(gt(similarity, 0.8));
+  
+  // If workspaceId is provided, join with workspaces_users to filter by workspace upfront
+  if (workspaceId) {
+    query = query
+      .innerJoin(
+        workspacesUsers,
+        and(
+          eq(embeddings.userId, workspacesUsers.userId),
+          eq(workspacesUsers.workspaceId, workspaceId)
+        )
+      );
+  }
+  
+  // Execute query with ordering and limit
+  const similarContentFromUser = await query
     .orderBy((t) => desc(t.similarity))
-    .limit(4);
+    .limit(5);
 
-  console.log(similarContentFromUser);
-  const userIds = similarContentFromUser.map((content) => content.userId).filter((id): id is string => id !== null);
-  // console.log(userIds);
+  console.log("Contenido similar encontrado:", similarContentFromUser.length);
+  
+  // If no results, return empty array
+  if (similarContentFromUser.length === 0) {
+    return [];
+  }
+  
+  // Extract user IDs from results
+  const userIds = similarContentFromUser
+    .map((content) => content.userId)
+    .filter((id): id is string => id !== null);
+  
+  // Get user details
   const userNamesAndContents = await getUsersFromId(userIds, userQuery);
-  console.log(userNamesAndContents);
+  console.log("Usuarios procesados:", userNamesAndContents.length);
 
   return userNamesAndContents;
-};
+}
 

@@ -8,6 +8,13 @@
       "when": 1741478506386,
       "tag": "0000_amazing_calypso",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1742769458312,
+      "tag": "0001_sparkling_stephen_strange",
+      "breakpoints": true
     }
   ]
 }

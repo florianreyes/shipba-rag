@@ -7,7 +7,7 @@ import { z } from "zod";
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, workspaceId } = await req.json();
 
   // Extract the user's last message
   const lastMessage = messages[messages.length - 1];
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
           .describe("preguntas similares a la consulta del usuario. sé conciso."),
       }),
       prompt: `Analiza esta consulta: "${userQuery}". Proporciona lo siguiente:
-              3 preguntas similares que podrían ayudar a responder la consulta del usuario`,
+              3 preguntas similares que podrían ayudar a responder la consulta del usuario. Hacer preguntas que sean en tercera persona, por ejemplo: "¿A quién le gusta viajar?", "¿Quien le gusta el fútbol?", "¿Quien le gusta el ajedrez?", etc.`,
     });
 
     console.log("Preguntas generadas:", object.questions);
@@ -33,12 +33,20 @@ export async function POST(req: Request) {
     // Get relevant content using the generated questions
     const similarQuestions = object.questions;
     const results = await Promise.all(
-      similarQuestions.map(async (question) => await findRelevantContent(question))
+      similarQuestions.map(async (question) => 
+        await findRelevantContent(question, workspaceId)
+      )
     );
 
     // Flatten the array of arrays and remove duplicates based on 'name'
+    // Filter out any potential undefined or null items before flattening
     const uniqueResults = Array.from(
-      new Map(results.flat().map((item) => [item?.name, item])).values()
+      new Map(
+        results
+          .flat()
+          .filter(item => item !== null && item !== undefined)
+          .map((item) => [item.name, item])
+      ).values()
     );
 
     // Return the unique results

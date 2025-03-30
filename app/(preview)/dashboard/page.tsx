@@ -11,6 +11,7 @@ import { Navbar } from "@/components/navbar";
 import { PersonCards } from "@/components/person-cards";
 import { Person } from "@/components/person-cards";
 import { ArrowUp } from "lucide-react";
+import { useWorkspace } from "@/lib/context/workspace-context";
 
 export default function Chat() {
   const [input, setInput] = useState<string>("");
@@ -19,10 +20,17 @@ export default function Chat() {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<string>("");
   const [lastQuery, setLastQuery] = useState<string>("");
+  const { selectedWorkspace } = useWorkspace();
 
   useEffect(() => {
     if (persons.length > 0) setIsExpanded(true);
   }, [persons]);
+
+  useEffect(() => {
+    // Limpiar resultados de búsqueda cuando cambia el workspace
+    setPersons([]);
+    setLastQuery("");
+  }, [selectedWorkspace]);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +56,7 @@ export default function Chat() {
         },
         body: JSON.stringify({
           messages: [{ role: "user", content: input }],
+          workspaceId: selectedWorkspace?.id
         }),
       });
       
@@ -98,7 +107,7 @@ export default function Chat() {
             }}
           >
             <motion.h1 
-              className="text-3xl font-bold mb-8 font-mono "
+              className="text-3xl font-bold mb-8 font-mono mt-4"
               initial={{ opacity: 0, y: -10 }}
               animate={{ 
                 opacity: 1, 
@@ -109,7 +118,9 @@ export default function Chat() {
                 }
               }}
             >
-              Encontrá tu network
+              {selectedWorkspace 
+                ? `Encontrá tu network en ${selectedWorkspace.name}` 
+                : "Encontrá tu network"}
             </motion.h1>
             <form onSubmit={handleSearch} className="w-full max-w-xl">
               <motion.div 
@@ -126,7 +137,9 @@ export default function Chat() {
                 }}
               >
                 <Input
-                  placeholder="¿Qué tipo de personas estás buscando?"
+                  placeholder={selectedWorkspace 
+                    ? `¿Qué tipo de personas buscas en ${selectedWorkspace.name}?` 
+                    : "¿Qué tipo de personas estás buscando?"}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={isLoading}
@@ -176,7 +189,10 @@ export default function Chat() {
                       transition: { delay: 0.2, duration: 0.4 }
                     }}
                   >
-                    <p className="text-lg font-medium">Búsqueda: <span className="italic text-muted-foreground">{lastQuery}</span></p>
+                    <p className="text-lg font-medium">
+                      Búsqueda{selectedWorkspace ? ` en ${selectedWorkspace.name}` : ''}: 
+                      <span className="italic text-muted-foreground"> {lastQuery}</span>
+                    </p>
                   </motion.div>
                 )}
                 <PersonCards persons={persons} isLoading={isLoading} />
