@@ -111,7 +111,6 @@ Responde SOLO con el objeto JSON:`,
       };
     } catch (parseError) {
       console.error('Error parsing JSON response:', parseError);
-      console.log('Problematic text:', text);
       // Si no podemos parsear el JSON, asumimos que el texto es el resumen
       return {
         summary: text.length > maxLength ? text.substring(0, maxLength) : text,

@@ -7,6 +7,7 @@ export type UserData = {
   email: string | null;
   name: string | null;
   avatar_url: string | null;
+  auth_id: string | null;
 };
 
 /**
@@ -37,7 +38,8 @@ export async function getCurrentUser(): Promise<UserData | null> {
       id: userProfile?.id || '',
       email: user.email || null,
       name: userProfile?.name || user.email?.split('@')[0] || 'User',
-      avatar_url: typeof avatarUrl === 'string' ? avatarUrl : null
+      avatar_url: typeof avatarUrl === 'string' ? avatarUrl : null,
+      auth_id: user.id
     };
   } catch (error) {
     console.error('Error getting current user:', error);

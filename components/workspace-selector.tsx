@@ -40,22 +40,28 @@ export function WorkspaceSelector({ userId }: WorkspaceSelectorProps) {
             setSelectedWorkspace(userWorkspaces[0])
           }
         }
-        setIsLoading(false)
       } catch (error) {
         console.error('Error fetching workspaces:', error)
+      } finally {
         setIsLoading(false)
       }
     }
 
     setIsLoading(true)
     fetchWorkspaces()
-  }, [userId, selectedWorkspace, setSelectedWorkspace])
+  }, [userId, setSelectedWorkspace])
+
+  useEffect(() => {
+    if (!selectedWorkspace && workspaces.length > 0) {
+      setSelectedWorkspace(workspaces[0])
+    }
+  }, [workspaces, selectedWorkspace, setSelectedWorkspace])
 
   const handleAddCommunity = () => {
     toast.error("La creación de nuevas comunidades estará disponible en una actualización futura.")
   }
 
-  if (isLoading || !userId) {
+  if ((isLoading && workspaces.length === 0) || !userId) {
     return <WorkspaceSkeleton />
   }
 
