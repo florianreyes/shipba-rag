@@ -21,12 +21,20 @@ const generateChunks = (input: string): string[] => {
 export const generateEmbeddings = async (
   value: string,
 ): Promise<Array<{ embedding: number[]; content: string }>> => {
+  
   const chunks = generateChunks(value);
-  const { embeddings } = await embedMany({
-    model: embeddingModel,
-    values: chunks,
-  });
-  return embeddings.map((e, i) => ({ content: chunks[i], embedding: e }));
+  
+  try {
+    const { embeddings } = await embedMany({
+      model: embeddingModel,
+      values: chunks,
+    });
+    
+    return embeddings.map((e, i) => ({ content: chunks[i], embedding: e }));
+  } catch (error) {
+    console.error("generateEmbeddings - Error generating embeddings:", error);
+    throw error; // Re-throw to handle in the calling function
+  }
 };
 
 export const generateEmbedding = async (value: string): Promise<number[]> => {
@@ -67,7 +75,11 @@ export const getUsersFromId = async (
   // Process users with summarization and keyword extraction
   const processedUsers = await Promise.all(
     usersList.map(async (user) => {
-      console.log(user.content);
+      // Skip users without content
+      if (!user.content) {
+        return null;
+      }
+      
       // Use the new summarizeDescription function with userQuery
       const { summary: contentSummary, shouldRender } = await summarizeDescription(user.content, userQuery);
       
@@ -86,7 +98,7 @@ export const getUsersFromId = async (
       if (user.instagram_handle) socialHandles.instagram = user.instagram_handle;
 
       return {
-        name: user.name,
+        name: user.name ?? "",
         content: user.content,
         contentSummary,
         keywords,
@@ -95,7 +107,7 @@ export const getUsersFromId = async (
     })
   );
 
-  // Filter out null results (where shouldRender was false)
+  // Filter out null results (where shouldRender was false or content was null)
   return processedUsers.filter((user): user is NonNullable<typeof user> => user !== null);
 };
 
@@ -131,7 +143,6 @@ export const findRelevantContent = async (userQuery: string, workspaceId?: strin
     .orderBy((t) => desc(t.similarity))
     .limit(5);
 
-  console.log("Contenido similar encontrado:", similarContentFromUser.length);
   
   // If no results, return empty array
   if (similarContentFromUser.length === 0) {
@@ -145,7 +156,6 @@ export const findRelevantContent = async (userQuery: string, workspaceId?: strin
   
   // Get user details
   const userNamesAndContents = await getUsersFromId(userIds, userQuery);
-  console.log("Usuarios procesados:", userNamesAndContents.length);
 
   return userNamesAndContents;
 }

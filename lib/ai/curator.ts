@@ -24,7 +24,7 @@ Descripción de la persona:`,
 
     return text;
   } catch (error) {
-    console.error('Error generating interest description:', error);
+    console.error('generateInterestDescription - Error generating interest description:', error);
     // Fallback to original interest if generation fails
     return `Interest in ${interest}`;
   }

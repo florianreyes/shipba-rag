@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
   const { data: { session } } = await supabase.auth.getSession()
 
   // Define protected routes
-  const protectedRoutes = ['/dashboard']
+  const protectedRoutes = ['/search', '/profile']
   const isProtectedRoute = protectedRoutes.some(route => pathname === route || (pathname.startsWith(route) && pathname !== '/login'))
   
   // Auth routes (no authenticated users allowed)
@@ -49,7 +49,30 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isAuthRoute && session) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    // Check if user has completed their profile
+    try {
+      // Get user data from Supabase
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (user) {
+        // Check if user profile is complete by checking the users table
+        const { data: userData } = await supabase
+          .from('users')
+          .select('content')
+          .eq('auth_id', user.id)
+          .single()
+          
+        // If user has empty content, redirect to complete profile
+        if (userData && (!userData.content || userData.content.trim() === '')) {
+          return NextResponse.redirect(new URL('/profile', request.url))
+        }
+      }
+    } catch (error) {
+      console.error('Error checking user profile:', error)
+    }
+    
+    // Default redirect if profile is complete
+    return NextResponse.redirect(new URL('/search', request.url))
   }
 
   return response

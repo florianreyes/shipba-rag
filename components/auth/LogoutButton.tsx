@@ -17,16 +17,16 @@ export default function LogoutButton() {
       const { error } = await signOut()
       
       if (error) {
-        toast.error(`Failed to log out: ${error}`)
+        toast.error(`Error al cerrar sesión: ${error}`)
         return
       }
       
-      toast.success('Logged out successfully')
+      toast.success('Sesión cerrada exitosamente')
       router.push('/login')
       router.refresh()
     } catch (error) {
-      console.error('Error signing out:', error)
-      toast.error('Failed to log out')
+      console.error('Error al cerrar sesión:', error)
+      toast.error('Error al cerrar sesión')
     } finally {
       setIsLoading(false)
     }
@@ -38,7 +38,7 @@ export default function LogoutButton() {
       onClick={handleLogout} 
       disabled={isLoading}
     >
-      {isLoading ? 'Logging out...' : 'Sign out'}
+      {isLoading ? 'Cerrando sesión...' : 'Cerrar sesión'}
     </Button>
   )
 } 

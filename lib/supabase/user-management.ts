@@ -6,7 +6,7 @@ export type User = {
   auth_id: string | null
   name: string
   mail: string
-  content: string
+  content?: string | null
   x_handle?: string | null
   telegram_handle?: string | null
   instagram_handle?: string | null
@@ -18,7 +18,7 @@ export type User = {
  * Creates or updates a user record in the public.users table
  * based on Supabase Auth user data
  */
-export async function syncUserWithAuth(authUserId: string, userDetails: Partial<User> & { mail: string }) {
+export async function syncUserWithAuth(authUserId: string, userDetails: Partial<User> & { mail: string, name: string }) {
   const supabase = createClient()
   
   // First check if there's already a user with matching auth_id
@@ -33,12 +33,18 @@ export async function syncUserWithAuth(authUserId: string, userDetails: Partial<
     throw fetchAuthError
   }
 
+  // Default empty content if not provided
+  const details = {
+    ...userDetails,
+    content: userDetails.content || "" // Set default empty content if missing
+  }
+
   // If found by auth_id, update that user
   if (existingAuthUser) {
     const { data, error: updateError } = await supabase
       .from('users')
       .update({
-        ...userDetails,
+        ...details,
         updated_at: new Date().toISOString()
       })
       .eq('auth_id', authUserId)
@@ -72,7 +78,7 @@ export async function syncUserWithAuth(authUserId: string, userDetails: Partial<
       .from('users')
       .update({
         auth_id: authUserId,
-        ...userDetails,
+        ...details,
         updated_at: new Date().toISOString()
       })
       .eq('id', existingEmailUser.id)
@@ -92,7 +98,7 @@ export async function syncUserWithAuth(authUserId: string, userDetails: Partial<
     .from('users')
     .insert([{ 
       auth_id: authUserId,
-      ...userDetails 
+      ...details 
     }])
     .select()
     .single()

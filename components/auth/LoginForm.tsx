@@ -5,23 +5,28 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
 import { signInWithMagicLink } from '@/lib/actions/auth'
+import Link from 'next/link'
+import EmailAlert from './EmailAlert'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { AlertCircle } from 'lucide-react'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isSent, setIsSent] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!email || !email.includes('@')) {
-      toast.error('Please enter a valid email address')
+      setErrorMessage('Por favor ingresa un correo electrónico válido')
       return
     }
 
+    setErrorMessage(null)
     setIsLoading(true)
     
     try {
@@ -29,15 +34,14 @@ export default function LoginForm() {
       const { error } = await signInWithMagicLink(email, redirectUrl)
 
       if (error) {
-        toast.error(`Failed to send login link: ${error}`)
+        setErrorMessage(error)
         return
       }
 
       setIsSent(true)
-      toast.success('Check your email for the login link')
     } catch (error) {
-      console.error('Error logging in:', error)
-      toast.error('Failed to send login link. Please try again.')
+      console.error('Error al iniciar sesión:', error)
+      setErrorMessage('Error al enviar enlace de inicio de sesión. Por favor intenta de nuevo.')
     } finally {
       setIsLoading(false)
     }
@@ -45,44 +49,45 @@ export default function LoginForm() {
 
 
   if (isSent) {
-    return (
-      <div className="space-y-4 text-center">
-        <h3 className="text-lg font-medium">Check your email</h3>
-        <p className="text-sm text-muted-foreground">
-          We sent a magic link to <span className="font-medium">{email}</span>
-        </p>
-        <Button 
-          variant="outline" 
-          className="w-full"
-          onClick={() => setIsSent(false)}
-        >
-          Use a different email
-        </Button>
-      </div>
-    )
+    return <EmailAlert email={email} type="login" />
   }
 
   return (
     <form onSubmit={handleLogin} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">Correo Electrónico</Label>
         <Input
           id="email"
           type="email"
-          placeholder="your.email@example.com"
+          placeholder="tu.correo@ejemplo.com"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value)
+            if (errorMessage) setErrorMessage(null)
+          }}
           required
           disabled={isLoading}
+          className={errorMessage ? "border-black" : ""}
         />
       </div>
+
+      {errorMessage && (
+        <Alert className="py-2 border-black">
+          <AlertCircle className="h-4 w-4 mr-2 text-black" />
+          <AlertDescription className="text-sm text-black">
+            {errorMessage}
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Button 
         type="submit" 
         className="w-full" 
         disabled={isLoading}
       >
-        {isLoading ? 'Sending...' : 'Send Magic Link'}
+        {isLoading ? 'Enviando...' : 'Enviar Enlace Mágico'}
       </Button>
+      
       
     </form>
   )

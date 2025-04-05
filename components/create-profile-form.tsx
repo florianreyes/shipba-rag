@@ -8,8 +8,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "@/components/ui/form"
 import { InterestCheckboxes } from "./interest-checkboxes"
-import { createUser } from "@/lib/actions/users"
 import { useState } from "react"
+import { completeUserProfile } from "@/lib/actions/users";
+
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -59,14 +60,25 @@ interface ExtendedUseFormReturn extends UseFormReturn<FormData> {
   resetInterests?: () => void;
 }
 
-export function ShortForm({ darkMode }: { darkMode: boolean }) {
+// Add props for profile update mode
+interface ShortFormProps {
+  darkMode: boolean;
+  userData: {
+    id: string;
+    email: string;
+    auth_id: string;
+  };
+  onSuccess?: () => void;
+}
+
+export function CreateProfileForm({ darkMode, userData, onSuccess }: ShortFormProps) {
   const [isSuccess, setIsSuccess] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  // Use user data for profile update
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
-      email: "",
       x_handle: "",
       telegram_handle: "",
       instagram_handle: "",
@@ -80,7 +92,7 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
       "¿Has trabajado en proyectos personales?": "",
       "Situación profesional actual:": "",
     },
-  }) as ExtendedUseFormReturn
+  }) as ExtendedUseFormReturn;
 
   async function onSubmit(data: FormData) {
     setIsSubmitting(true);
@@ -97,31 +109,36 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
         })
         .join("\n");
 
-      const result = await createUser({
+      const result = await completeUserProfile({
         name: username,
-        mail: email,
-        auth_id: null,
+        mail: userData.email, // Use email from userData
+        auth_id: userData.auth_id,
         x_handle,
         telegram_handle,
         instagram_handle,
         content,
       });
 
+
       if (result) {
         setIsSuccess(true);
-        form.reset();
-        // Reset interests using the exposed function
-        if (form.resetInterests) {
-          form.resetInterests();
+        
+        // Call onSuccess callback if provided
+        if (onSuccess) {
+          onSuccess();
         }
+        
         // Reset success message after 3 seconds
         setTimeout(() => setIsSuccess(false), 3000);
       }
+    } catch (error) {
+      console.error("ProfileForm - Error in onSubmit:", error);
     } finally {
       setIsSubmitting(false);
     }
   }
 
+  // Render appropriate form based on isShortForm flag
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
@@ -135,29 +152,6 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
                 <FormControl>
                   <Input
                     placeholder="Ingresa tu nombre completo"
-                    {...field}
-                    className={`text-sm md:text-base ${
-                      darkMode
-                        ? "bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-gray-500"
-                        : "bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-gray-400"
-                    }`}
-                  />
-                </FormControl>
-                <FormMessage className="text-red-500 text-xs md:text-sm" />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="Ingresa tu email"
                     {...field}
                     className={`text-sm md:text-base ${
                       darkMode
@@ -458,25 +452,25 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
             )}
           />
 
-            <Button
-              type="submit"
-              className={`w-full mt-6 ${
-                isSuccess
-                  ? "bg-green-600 text-white cursor-not-allowed"
-                  : "bg-black hover:bg-gray-800 text-white"
-              }`}
-              disabled={isSubmitting || isSuccess}
-            >
-              {isSubmitting ? (
-                <>
-                  Enviando...
-                </>
-              ) : isSuccess ? (
-                'Enviado'
-              ) : (
-                'Enviar'
-              )}
-            </Button>
+          <Button
+            type="submit"
+            className={`w-full mt-6 ${
+              isSuccess
+                ? "bg-gray-800 text-white cursor-not-allowed"
+                : "bg-black hover:bg-gray-800 text-white"
+            }`}
+            disabled={isSubmitting || isSuccess}
+          >
+            {isSubmitting ? (
+              <>
+                Enviando...
+              </>
+            ) : isSuccess ? (
+              'Enviado'
+            ) : (
+              'Enviar'
+            )}
+          </Button>
         </div>
       </form>
     </Form>

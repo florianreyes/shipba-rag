@@ -28,8 +28,6 @@ export async function POST(req: Request) {
               3 preguntas similares que podrían ayudar a responder la consulta del usuario. Hacer preguntas que sean en tercera persona, por ejemplo: "¿A quién le gusta viajar?", "¿Quien le gusta el fútbol?", "¿Quien le gusta el ajedrez?", etc.`,
     });
 
-    console.log("Preguntas generadas:", object.questions);
-
     // Get relevant content using the generated questions
     const similarQuestions = object.questions;
     const results = await Promise.all(

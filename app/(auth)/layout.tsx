@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
-import "../(preview)/globals.css";
+import "../(main)/globals.css";
 
 export const metadata: Metadata = {
   title: "Auth - Mesh Community",

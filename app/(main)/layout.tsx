@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 import { WorkspaceProvider } from "@/lib/context/workspace-context";
+import { Navbar } from "@/components/navbar";
 
 import "./globals.css";
 
@@ -31,7 +32,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <WorkspaceProvider>
-            {children}
+            <div className="flex flex-col min-h-[100dvh]">
+              <Navbar />
+              {children}
+            </div>
           </WorkspaceProvider>
           <Toaster />
         </ThemeProvider>

@@ -2,20 +2,27 @@
 
 import { useState, useEffect } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { User, Settings, LogOut } from "lucide-react"
+import { User, Settings, LogOut, Search } from "lucide-react"
 import Image from "next/image"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Button } from "./ui/button"
 import { toast } from "sonner"
 import { UserData, getCurrentUser, signOut } from "@/lib/actions/auth"
 import { WorkspaceSelector } from "./workspace-selector"
 
+// Routes where we want to show the discover button instead of workspace selector
+const DISCOVER_ROUTES = ['/profile'];
+
 export function Navbar() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const router = useRouter()
+  const pathname = usePathname()
+  
+  // Check if current path should show discover button
+  const shouldShowDiscover = DISCOVER_ROUTES.some(route => pathname?.startsWith(route))
   
   useEffect(() => {
     const fetchData = async () => {
@@ -48,10 +55,25 @@ export function Navbar() {
     }
   }
 
+  const handleDiscoverClick = () => {
+    router.push('/search')
+  }
+
   return (
     <div className="w-full border-b dark:border-neutral-800 py-2 px-4">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <WorkspaceSelector userId={userData?.id} />
+        {shouldShowDiscover ? (
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2"
+            onClick={handleDiscoverClick}
+          >
+            <Search className="h-4 w-4" />
+            <span>Descubrir</span>
+          </Button>
+        ) : (
+          <WorkspaceSelector userId={userData?.id} />
+        )}
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -85,7 +107,7 @@ export function Navbar() {
                 <div className="text-xs text-muted-foreground">{userData?.email || 'Loading...'}</div>
               </div>
               <DropdownMenuItem asChild>
-                <Link href="/" className="flex items-center gap-2 cursor-pointer">
+                <Link href="/profile" className="flex items-center gap-2 cursor-pointer">
                   <User className="h-4 w-4" />
                   <span>Perfil</span>
                 </Link>
