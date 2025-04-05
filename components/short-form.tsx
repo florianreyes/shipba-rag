@@ -21,25 +21,25 @@ const formSchema = z.object({
   x_handle: z.string(),
   telegram_handle: z.string(),
   instagram_handle: z.string(),
-  "Imaginá que te presentamos en un podcast, ¿qué diríamos sobre vos en una frase?": z.string().min(5, {
+  "Breve introducción sobre ti": z.string().min(5, {
     message: "Por favor proporciona una breve introducción.",
   }),
-  "Si tuvieras un día libre completo, ¿en qué actividad o proyecto lo invertirías?": z.string().min(5, {
+  "¿En qué actividades inviertes tu tiempo libre?": z.string().min(5, {
     message: "Por favor cuéntanos qué harías.",
   }),
-  "Si tenes un perfil tecnico, que tecnologias usas?": z.string().optional(),
-  "Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:": z.array(z.string()),
-  "¿Qué te gustaría aprender o explorar en los próximos meses?": z.string().min(5, {
+  "Si tienes perfil técnico, ¿qué tecnologías utilizas?": z.string().optional(),
+  "Selecciona los temas que te interesan:": z.array(z.string()),
+  "¿Qué te gustaría aprender o explorar próximamente?": z.string().min(5, {
     message: "Por favor comparte qué te gustaría aprender.",
   }),
-  "¿Qué influencers o cuentas relevantes en redes sociales te interesan?": z.string().min(2, {
+  "¿Qué influencers o cuentas sigues en redes sociales?": z.string().min(2, {
     message: "Por favor comparte qué influencers te interesan.",
   }),
-  "Contanos algo de vos que todos deberían saber:": z.string().min(5, {
+  "Comparte algo interesante sobre ti:": z.string().min(5, {
     message: "Por favor comparte algo sobre ti.",
   }),
-  "🚀 ¿Trabajaste alguna vez en un proyecto personal?": z.string().optional(),
-  "💼 ¿Estás buscando nuevas oportunidades profesionales actualmente? ¿Te interesa sumar talento a tu equipo?": z.string().optional(),
+  "¿Has trabajado en proyectos personales?": z.string().optional(),
+  "Situación profesional actual:": z.string().optional(),
 }).refine(
   (data) => {
     return data.x_handle.length > 0 || 
@@ -70,15 +70,15 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
       x_handle: "",
       telegram_handle: "",
       instagram_handle: "",
-      "Imaginá que te presentamos en un podcast, ¿qué diríamos sobre vos en una frase?": "",
-      "Si tuvieras un día libre completo, ¿en qué actividad o proyecto lo invertirías?": "",
-      "Si tenes un perfil tecnico, que tecnologias usas?": "",
-      "Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:": [],
-      "¿Qué te gustaría aprender o explorar en los próximos meses?": "",
-      "¿Qué influencers o cuentas relevantes en redes sociales te interesan?": "",
-      "Contanos algo de vos que todos deberían saber:": "",
-      "🚀 ¿Trabajaste alguna vez en un proyecto personal?": "",
-      "💼 ¿Estás buscando nuevas oportunidades profesionales actualmente? ¿Te interesa sumar talento a tu equipo?": "",
+      "Breve introducción sobre ti": "",
+      "¿En qué actividades inviertes tu tiempo libre?": "",
+      "Si tienes perfil técnico, ¿qué tecnologías utilizas?": "",
+      "Selecciona los temas que te interesan:": [],
+      "¿Qué te gustaría aprender o explorar próximamente?": "",
+      "¿Qué influencers o cuentas sigues en redes sociales?": "",
+      "Comparte algo interesante sobre ti:": "",
+      "¿Has trabajado en proyectos personales?": "",
+      "Situación profesional actual:": "",
     },
   }) as ExtendedUseFormReturn
 
@@ -100,6 +100,7 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
       const result = await createUser({
         name: username,
         mail: email,
+        auth_id: null,
         x_handle,
         telegram_handle,
         instagram_handle,
@@ -245,15 +246,15 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="Imaginá que te presentamos en un podcast, ¿qué diríamos sobre vos en una frase?"
+            name="Breve introducción sobre ti"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
-                  Imaginá que te presentamos en un podcast, ¿qué diríamos sobre vos en una frase?
+                  Breve introducción sobre ti
                 </FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Tu introducción para el podcast..."
+                    placeholder="Una breve descripción sobre ti..."
                     {...field}
                     className={`text-sm md:text-base ${
                       darkMode
@@ -269,11 +270,11 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="Si tuvieras un día libre completo, ¿en qué actividad o proyecto lo invertirías?"
+            name="¿En qué actividades inviertes tu tiempo libre?"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
-                  Si tuvieras un día libre completo, ¿en qué actividad o proyecto lo invertirías?
+                  ¿En qué actividades inviertes tu tiempo libre?
                 </FormLabel>
                 <FormControl>
                   <Textarea
@@ -293,11 +294,11 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="Si tenes un perfil tecnico, que tecnologias usas?"
+            name="Si tienes perfil técnico, ¿qué tecnologías utilizas?"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
-                  Si tenes un perfil tecnico, que tecnologias usas?
+                  Si tienes perfil técnico, ¿qué tecnologías utilizas?
                 </FormLabel>
                 <FormControl>
                   <Textarea
@@ -317,11 +318,11 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:"
+            name="Selecciona los temas que te interesan:"
             render={() => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
-                  Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:
+                  Selecciona los temas que te interesan:
                 </FormLabel>
                 <FormControl>
                   <InterestCheckboxes form={form} darkMode={darkMode} />
@@ -333,11 +334,11 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="¿Qué te gustaría aprender o explorar en los próximos meses?"
+            name="¿Qué te gustaría aprender o explorar próximamente?"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
-                  ¿Qué te gustaría aprender o explorar en los próximos meses?
+                  ¿Qué te gustaría aprender o explorar próximamente?
                 </FormLabel>
                 <FormControl>
                   <Textarea
@@ -357,11 +358,11 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="¿Qué influencers o cuentas relevantes en redes sociales te interesan?"
+            name="¿Qué influencers o cuentas sigues en redes sociales?"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
-                  ¿Qué influencers o cuentas relevantes en redes sociales te interesan?
+                  ¿Qué influencers o cuentas sigues en redes sociales?
                 </FormLabel>
                 <FormControl>
                   <Textarea
@@ -381,11 +382,11 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="Contanos algo de vos que todos deberían saber:"
+            name="Comparte algo interesante sobre ti:"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
-                  Contanos algo de vos que todos deberían saber:
+                  Comparte algo interesante sobre ti:
                 </FormLabel>
                 <FormControl>
                   <Textarea
@@ -405,13 +406,13 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="🚀 ¿Trabajaste alguna vez en un proyecto personal?"
+            name="¿Has trabajado en proyectos personales?"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
-                  🚀 ¿Trabajaste alguna vez en un proyecto personal?
+                  ¿Has trabajado en proyectos personales?
                   <p className="text-xs text-gray-500 mt-1 font-normal">
-                    Contanos brevemente de qué se trató y cómo resultó esa experiencia para vos (¡vale todo! éxitos, aprendizajes o anécdotas interesantes).
+                    Describe brevemente tus proyectos personales y qué aprendiste de ellos.
                   </p>
                 </FormLabel>
                 <FormControl>
@@ -432,13 +433,13 @@ export function ShortForm({ darkMode }: { darkMode: boolean }) {
 
           <FormField
             control={form.control}
-            name="💼 ¿Estás buscando nuevas oportunidades profesionales actualmente? ¿Te interesa sumar talento a tu equipo?"
+            name="Situación profesional actual:"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className={`text-sm md:text-base ${darkMode ? "text-white" : "text-gray-900"}`}>
-                  💼 ¿Estás buscando nuevas oportunidades profesionales actualmente? ¿Te interesa sumar talento a tu equipo?
+                  Situación profesional actual:
                   <p className="text-xs text-gray-500 mt-1 font-normal">
-                    Contanos si estás abierto a nuevas propuestas, si querés contratar gente o estás explorando algún cambio profesional.
+                    Describe tu situación profesional actual, si estás buscando nuevas oportunidades o si buscas colaborar con otros profesionales.
                   </p>
                 </FormLabel>
                 <FormControl>

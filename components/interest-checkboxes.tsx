@@ -141,7 +141,7 @@ export function InterestCheckboxes({ form, darkMode, onReset }: { form: any; dar
 
   // Update form value when selections change
   useEffect(() => {
-    form.setValue("Elegí los temas que te apasionen y sobre los cuales te gustaría conectar con otros:", selectedInterests)
+    form.setValue("Selecciona los temas que te interesan:", selectedInterests)
   }, [selectedInterests, form])
 
   // Add reset function

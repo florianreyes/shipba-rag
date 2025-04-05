@@ -19,7 +19,7 @@ export const workspacesUsers = pgTable("workspaces_users", {
     { onDelete: "cascade" },),
   createdAt: timestamp("created_at")
     .notNull()
-    .default(sql`now()`)
+    .defaultNow()
 });
 
 // Schema for workspace users - used to validate API requests

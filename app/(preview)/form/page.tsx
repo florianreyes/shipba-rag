@@ -35,19 +35,20 @@ export default function Home() {
           <h1
             className={`text-4xl md:text-6xl font-bold tracking-tighter ${darkMode ? "text-white" : "text-gray-900"}`}
           >
-            SHIP BA Community
+            Perfil
           </h1>
           <p className={`text-lg md:text-xl ${darkMode ? "text-white/80" : "text-gray-600"} max-w-2xl mx-auto`}>
-            Crea tu perfil para poder conectar con la gente que quieras de SHIP BA a partir de sus intereses y habilidades.          </p>
+            Completa tu información personal para crear tu perfil.
+          </p>
         </div>
 
         <Card
           className={`border ${darkMode ? "bg-gray-900 border-neutral-700 text-white" : "bg-white border-gray-200 text-gray-900"}`}
         >
           <CardHeader className={`border-b ${darkMode ? "border-neutral-700" : "border-gray-200"}`}>
-            <CardTitle className="text-2xl">Contanos de Vos</CardTitle>
+            <CardTitle className="text-2xl">Información Personal</CardTitle>
             <CardDescription className={darkMode ? "text-gray-400" : "text-gray-500"}>
-              Completá el formulario a continuación
+              Por favor completa todos los campos a continuación
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">

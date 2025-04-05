@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { text, varchar, timestamp, pgTable } from "drizzle-orm/pg-core";
+import { text, varchar, timestamp, pgTable, uuid } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -9,6 +9,7 @@ export const users = pgTable("users", {
   id: varchar("id", { length: 191 })
     .primaryKey()
     .$defaultFn(() => nanoid()),
+  auth_id: uuid("auth_id").unique(),  // Nullable to support existing users
   name: text("name").notNull(),
   mail: text("mail").notNull(),
   x_handle: text("x_handle"),
@@ -17,10 +18,10 @@ export const users = pgTable("users", {
   content: text("content").notNull(),
   createdAt: timestamp("created_at")
     .notNull()
-    .default(sql`now()`),
+    .defaultNow(),
   updatedAt: timestamp("updated_at")
     .notNull()
-    .default(sql`now()`),
+    .defaultNow(),
 });
 
 // Schema for users - used to validate API requests
