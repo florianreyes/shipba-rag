@@ -17,6 +17,9 @@ export const workspacesUsers = pgTable("workspaces_users", {
   userId: varchar("user_id", { length: 191 }).notNull().references(
     () => users.id,
     { onDelete: "cascade" },),
+  status: text("status").notNull().default("active"),
+  invitedBy: varchar("invited_by", { length: 191 }).references(() => users.id),
+  invitedAt: timestamp("invited_at"),
   createdAt: timestamp("created_at")
     .notNull()
     .defaultNow()

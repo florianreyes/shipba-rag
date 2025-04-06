@@ -224,20 +224,20 @@ export function InterestCheckboxes({ form, darkMode, onReset }: { form: any; dar
     form.setValue("Selecciona los temas que te interesan:", selectedInterests)
   }, [selectedInterests, form])
 
-  // Reset function
-  const resetInterests = () => {
-    setSelectedInterests([])
-    if (onReset) {
-      onReset()
-    }
-  }
-
   // Expose reset function to parent
   useEffect(() => {
+    // Define resetInterests inside the useEffect
+    const resetInterests = () => {
+      setSelectedInterests([])
+      if (onReset) {
+        onReset()
+      }
+    }
+    
     if (form) {
       form.resetInterests = resetInterests
     }
-  }, [form, resetInterests])
+  }, [form, onReset])
 
   const toggleInterest = (id: string) => {
     setSelectedInterests((prev) => {

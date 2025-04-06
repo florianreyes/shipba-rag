@@ -33,6 +33,8 @@ export function WorkspaceSelector({ userId }: WorkspaceSelectorProps) {
       }
 
       try {
+        // getUserWorkspaces now only returns workspaces where the user has 'active' or 'admin' status
+        // Workspaces where the user is 'invited' or 'rejected' are filtered out
         const userWorkspaces = await getUserWorkspaces(userId)
         if (userWorkspaces.length > 0) {
           setWorkspaces(userWorkspaces)
@@ -49,7 +51,7 @@ export function WorkspaceSelector({ userId }: WorkspaceSelectorProps) {
 
     setIsLoading(true)
     fetchWorkspaces()
-  }, [userId, setSelectedWorkspace])
+  }, [userId, setSelectedWorkspace, selectedWorkspace])
 
   useEffect(() => {
     if (!selectedWorkspace && workspaces.length > 0) {
