@@ -2,24 +2,26 @@
 
 import { useState, useEffect } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { User, Settings, LogOut, Search } from "lucide-react"
+import { User, Settings, LogOut, Search, Sun, Moon } from "lucide-react"
 import Image from "next/image"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { Button } from "./ui/button"
 import { toast } from "sonner"
 import { UserData, getCurrentUser, signOut } from "@/lib/actions/auth"
 import { WorkspaceSelector } from "./workspace-selector"
+import { InvitationsDropdown } from "./invitations-dropdown"
+import { useTheme } from "next-themes"
 
 // Routes where we want to show the discover button instead of workspace selector
-const DISCOVER_ROUTES = ['/profile'];
+const DISCOVER_ROUTES = ['/profile', '/workspace'];
 
 export function Navbar() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const router = useRouter()
   const pathname = usePathname()
+  const { setTheme, theme } = useTheme()
   
   // Check if current path should show discover button
   const shouldShowDiscover = DISCOVER_ROUTES.some(route => pathname?.startsWith(route))
@@ -59,6 +61,10 @@ export function Navbar() {
     router.push('/search')
   }
 
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light")
+  }
+
   return (
     <div className="w-full border-b dark:border-neutral-800 py-2 px-4">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -76,7 +82,7 @@ export function Navbar() {
         )}
 
         <div className="flex items-center gap-2">
-          <ThemeToggle />
+          {userData?.id && <InvitationsDropdown />}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
@@ -117,6 +123,11 @@ export function Navbar() {
                   <Settings className="h-4 w-4" />
                   <span>Configuración</span>
                 </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={toggleTheme} className="flex items-center gap-2 cursor-pointer">
+                <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span>Cambiar tema</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 cursor-pointer">
                 <LogOut className="h-4 w-4" />
